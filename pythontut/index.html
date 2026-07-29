@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open 2 tabs · self-close</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: linear-gradient(145deg, #0b1a2e 0%, #1a2f44 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+      padding: 1.5rem;
+      margin: 0;
+    }
+    .card {
+      max-width: 640px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 3rem 1rem 3rem 1rem;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+      transition: transform 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    h1 {
+      font-weight: 400;
+      font-size: 2.1rem;
+      letter-spacing: -0.02em;
+      color: #f0f7ff;
+      text-shadow: 0 2px 10px rgba(0, 20, 40, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+    h1 span {
+      background: #ffd966;
+      color: #0b1a2e;
+      font-weight: 600;
+      font-size: 1.2rem;
+      padding: 0.1rem 0.9rem;
+      border-radius: 60px;
+      letter-spacing: 0.3px;
+      box-shadow: inset 0 -2px 0 #b38f40;
+    }
+    .sub {
+      color: #b6d0e8;
+      font-size: 1rem;
+      font-weight: 300;
+      border-left: 3px solid #5f8ab0;
+      padding-left: 1rem;
+      margin-top: 0.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+    .info-panel {
+      background: rgba(10, 25, 40, 0.6);
+      border-radius: 1.8rem;
+      padding: 1.5rem 1.8rem;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: inset 0 2px 3px rgba(0,0,0,0.4);
+    }
+    .url-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 0.5rem 0 1.8rem 0;
+    }
+    .url-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: #0f263b;
+      padding: 0.8rem 1.2rem;
+      border-radius: 100px;
+      border: 1px solid #2c4a66;
+      transition: 0.15s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .url-item:hover {
+      border-color: #5f8ab0;
+      background: #142f48;
+    }
+    .badge {
+      background: #2d5b7c;
+      color: white;
+      font-weight: 600;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      background: #3e6a8f;
+    }
+    .url-item code {
+      color: #d6eaff;
+      font-family: 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      word-break: break-all;
+      background: #0b1a2e;
+      padding: 0.2rem 0.7rem;
+      border-radius: 40px;
+      border: 1px solid #2e4b66;
+    }
+    .url-item .arrow {
+      color: #88b4d8;
+      margin-right: 0.2rem;
+    }
+    .action-btn {
+      background: #e7b42c;
+      border: none;
+      color: #0b1a2e;
+      font-weight: 600;
+      font-size: 1.3rem;
+      padding: 0.9rem 2.2rem;
+      border-radius: 80px;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 8px 0 #8f6f1f, 0 8px 20px rgba(0,0,0,0.5);
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 0.3rem;
+      border: 1px solid #f5d36e;
+    }
+    .action-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 3px 0 #8f6f1f, 0 8px 20px rgba(0,0,0,0.5);
+    }
+    .action-btn:hover {
+      background: #f5c542;
+      border-color: #ffe28a;
+    }
+    .action-btn:disabled {
+      opacity: 0.5;
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #6b541a;
+      pointer-events: none;
+      filter: grayscale(0.4);
+    }
+    .footnote {
+      margin-top: 1.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #8cb0cf;
+      font-size: 0.85rem;
+      border-top: 1px solid #203a50;
+      padding-top: 1.2rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .status-badge {
+      background: #1e3a52;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      color: #b4d6f5;
+      font-size: 0.8rem;
+      font-weight: 400;
+      border: 1px solid #2d577a;
+    }
+    .close-indicator {
+      color: #ffbe76;
+      font-weight: 400;
+    }
+    .warning-note {
+      background: #271f0e;
+      border-radius: 40px;
+      padding: 0.2rem 1rem;
+      font-size: 0.75rem;
+      color: #e8c78c;
+      border: 1px solid #5f4a1f;
+    }
+    @media (max-width: 480px) {
+      .card { padding: 1.8rem 1.2rem; }
+      h1 { font-size: 1.7rem; }
+      .url-item { flex-wrap: wrap; padding: 0.8rem; }
+      .url-item code { font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>
+      ⚡ tab launcher
+      <span>2×</span>
+    </h1>
+    <div class="sub">opens two new tabs · then closes this window</div>
+
+    <div class="info-panel">
+      <div class="url-grid">
+        <div class="url-item">
+          <span class="badge">tab 1</span>
+          <span class="arrow">➜</span>
+          <code>example.com</code>
+        </div>
+        <div class="url-item">
+          <span class="badge">tab 2</span>
+          <span class="arrow">➜</span>
+          <code>example.org</code>
+        </div>
+      </div>
+
+      <button class="action-btn" id="launchBtn">
+        <span>🚀</span> open tabs & close
+      </button>
+      
+      <div style="margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: space-between;">
+        <span class="status-badge" id="statusMessage">⏳ ready</span>
+        <span class="warning-note">⚠️ may be blocked by popup blockers</span>
+      </div>
+    </div>
+
+    <div class="footnote">
+      <span>🔒 <span class="close-indicator">self‑close</span> after launch</span>
+      <span style="background: #102433; padding: 0.2rem 0.9rem; border-radius: 60px;">⚙️ window.close()</span>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const launchBtn = document.getElementById('launchBtn');
+      const statusEl = document.getElementById('statusMessage');
+
+      const TAB_URLS = [
+        'https://www.youtube.com/results?search_query=python+tutorials',
+        'https://docs.python.org/3/'
+      ];
+
+      function setStatus(text, isError = false) {
+        if (statusEl) {
+          statusEl.textContent = text;
+          statusEl.style.color = isError ? '#f5a97f' : '#b4d6f5';
+        }
+      }
+
+      function launchAndClose() {
+        if (launchBtn) {
+          launchBtn.disabled = true;
+          launchBtn.style.opacity = '0.7';
+        }
+        setStatus('⏳ opening tabs …');
+
+        let openedCount = 0;
+        let errorOccurred = false;
+
+        for (let url of TAB_URLS) {
+          try {
+            const newTab = window.open(url, '_blank');
+            if (newTab === null) {
+              console.warn(`Popup blocked for ${url}`);
+              errorOccurred = true;
+            } else {
+              openedCount++;
+            }
+          } catch (err) {
+            console.error(`Error opening ${url}:`, err);
+            errorOccurred = true;
+          }
+        }
+
+        const closeDelay = 200;
+
+        setTimeout(() => {
+          if (openedCount === 0 && errorOccurred) {
+            setStatus('⚠️ both tabs blocked — close manually', true);
+            if (launchBtn) {
+              launchBtn.disabled = false;
+              launchBtn.style.opacity = '1';
+            }
+            return;
+          }
+
+          if (openedCount === 1) {
+            setStatus(`⚠️ only 1 tab opened (${TAB_URLS.length - openedCount} blocked) — closing anyway`, true);
+          } else {
+            setStatus(`✅ ${openedCount} tabs opened — closing now`);
+          }
+
+          try {
+            window.close();
+
+          } catch (closeErr) {
+            console.warn('window.close() threw:', closeErr);
+            setStatus('❌ cannot close: browser restriction', true);
+            if (launchBtn) {
+              launchBtn.disabled = false;
+              launchBtn.style.opacity = '1';
+            }
+            return;
+          }
+          const safetyCheck = setTimeout(() => {
+            setStatus('⚠️ window still open (close blocked by browser)', true);
+            if (launchBtn) {
+              launchBtn.disabled = false;
+              launchBtn.style.opacity = '1';
+            }
+          }, 500);
+          window.__closeSafetyTimeout = safetyCheck;
+
+          window.addEventListener('beforeunload', function clearTimeoutOnUnload() {
+            if (window.__closeSafetyTimeout) {
+              clearTimeout(window.__closeSafetyTimeout);
+              window.__closeSafetyTimeout = null;
+            }
+            window.removeEventListener('beforeunload', clearTimeoutOnUnload);
+          });
+
+        }, closeDelay);
+      }
+
+      if (launchBtn) {
+        launchBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          launchAndClose();
+        });
+      }
+
+      setStatus('🔓 click to open 2 tabs & close');
+
+      console.log('Tab Launcher ready. Click the button to open two tabs and close this page.');
+    })();
+  </script>
+</body>
+</html>
